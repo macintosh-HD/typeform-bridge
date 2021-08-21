@@ -10,13 +10,17 @@ import Vapor
 
 struct WebhookController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
-        guard let secretToken = Environment.get("TYPEFORM_SECRET") else {
-            fatalError("No secret to validate typeform payload.")
+        var routes = routes
+        if let secretToken = Environment.get("TYPEFORM_SECRET") {
+            let validation = PayloadValidationMiddleware(secretToken: secretToken)
+            routes = routes.grouped(validation)
         }
-        let validation = PayloadValidationMiddleware(secretToken: secretToken)
         
-        let validated = routes.grouped(validation)
-        let webhook = validated.grouped("webhook")
+        let path: [PathComponent] = Environment.get("WEBHOOK_PATH")?
+            .split(separator: "/")
+            .map(String.init)
+            .map(PathComponent.init(stringLiteral:)) ?? ["webhook"]
+        let webhook = routes.grouped(path) 
         
         webhook.post(use: handle)
     }
