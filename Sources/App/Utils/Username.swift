@@ -8,7 +8,26 @@
 import Vapor
 
 enum Username {
-    static func get() -> String {
+    enum Error: LocalizedError {
+        case runError(Swift.Error)
+        case commandError(String)
+        case noOutput
+        
+        var errorDescription: String {
+            var description = "Could not automatically determine the current users username.\n"
+            switch self {
+            case let .runError(error):
+                description = description + error.localizedDescription
+            case let .commandError(error):
+                description = description + error
+            case .noOutput:
+                description = description + "No name returned!"
+            }
+            return description
+        }
+    }
+    
+    static func get() throws -> String {
         let process = Process()
         process.launchPath = "id"
         process.arguments = ["-un"]
@@ -18,17 +37,20 @@ enum Username {
         process.standardOutput = outputPipe
         process.standardError = errorPipe
         
-        try process.run()
+        do {
+            try process.run()
+        } catch {
+            throw Error.runError(error)
+        }
         
         let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
         let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
         
-        let output = String(data: outputData, encoding: .utf8)
-        let error = String(data: errorData, encoding: .utf8)
-        
-        if error != nil || output == nil {
-            let error = error ?? "No return value."
-            fatalError("Could not automatically determine the current users username.\n\(error)")
+        if let error = String(data: errorData, encoding: .utf8) {
+            throw Error.commandError(error)
+        }
+        guard let output = String(data: outputData, encoding: .utf8) else {
+            throw Error.noOutput
         }
         
         return output

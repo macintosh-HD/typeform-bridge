@@ -11,7 +11,7 @@ public func configure(_ app: Application) throws {
     var configuration = PostgresConfiguration(
         hostname: Environment.get("POSTGRES_HOST") ?? "localhost",
         port: Environment.get("POSTGRES_PORT").flatMap(Int.init) ?? PostgresConfiguration.ianaPortNumber,
-        username: Environment.get("POSTGRES_USER") ?? Username.get(),
+        username: try Environment.get("POSTGRES_USER") ?? Username.get(),
         password: Environment.get("POSTGRES_PASS") ?? "",
         database: Environment.get("POSTGRES_DB") ?? "typeform-test"
     )
