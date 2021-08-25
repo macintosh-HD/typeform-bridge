@@ -5,14 +5,15 @@
 //  Created by Julian Gentges on 17.08.21.
 //
 
-import Model
+import TypeformModel
+import PayloadValidation
 import Vapor
 
 struct WebhookController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         var routes = routes
         if let secretToken = Environment.get("TYPEFORM_SECRET") {
-            let validation = PayloadValidationMiddleware(secretToken: secretToken)
+            let validation = PayloadValidationMiddleware(secretToken: secretToken, signatureHeaderName: "HTTP_TYPEFORM_SIGNATURE")
             routes = routes.grouped(validation)
         }
         

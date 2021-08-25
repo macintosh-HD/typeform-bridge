@@ -6,16 +6,17 @@ let package = Package(
     platforms: [
        .macOS(.v10_15)
     ],
-    products: [.library(name: "TypeformModel", targets: ["Model"])],
+    products: [.library(name: "TypeformModel", targets: ["TypeformModel"])],
     dependencies: [
         // 💧 A server-side Swift web framework.
         .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
         .package(url: "https://github.com/vapor/fluent.git", from: "4.0.0"),
-        .package(url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.0.0")
+        .package(url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.0.0"),
+        .package(url: "https://github.com/macintosh-HD/payload-validation.git", from: "0.0.2")
     ],
     targets: [
         .target(
-            name: "Model",
+            name: "TypeformModel",
             dependencies: [
                 .product(name: "Fluent", package: "fluent"),
                 .product(name: "Vapor", package: "vapor")
@@ -24,8 +25,10 @@ let package = Package(
         .target(
             name: "App",
             dependencies: [
-                .target(name: "Model"),
+                .target(name: "TypeformModel"),
+                .product(name: "PayloadValidation", package: "payload-validation"),
                 .product(name: "FluentPostgresDriver", package: "fluent-postgres-driver"),
+                .product(name: "Fluent", package: "fluent"),
                 .product(name: "Vapor", package: "vapor")
             ],
             swiftSettings: [

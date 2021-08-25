@@ -1,12 +1,10 @@
-import Model
+import TypeformModel
 import Fluent
 import FluentPostgresDriver
 import Vapor
 
 // configures your application
 public func configure(_ app: Application) throws {
-    // uncomment to serve files from /Public folder
-    // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
 
     var configuration = PostgresConfiguration(
         hostname: Environment.get("POSTGRES_HOST") ?? "localhost",

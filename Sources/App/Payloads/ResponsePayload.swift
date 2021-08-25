@@ -5,7 +5,7 @@
 //  Created by Julian Gentges on 17.08.21.
 //
 
-import Model
+import TypeformModel
 import Vapor
 
 struct ResponsePayload: Content {

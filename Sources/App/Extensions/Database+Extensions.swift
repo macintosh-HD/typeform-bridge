@@ -5,7 +5,7 @@
 //  Created by Julian Gentges on 20.08.21.
 //
 
-import Model
+import TypeformModel
 import Fluent
 
 public extension Database {

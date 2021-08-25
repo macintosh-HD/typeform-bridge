@@ -5,7 +5,7 @@
 //  Created by Julian Gentges on 19.08.21.
 //
 
-import Model
+import TypeformModel
 import Fluent
 
 extension FormVariable {
