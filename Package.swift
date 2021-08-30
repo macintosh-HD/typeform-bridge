@@ -12,14 +12,16 @@ let package = Package(
         .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
         .package(url: "https://github.com/vapor/fluent.git", from: "4.0.0"),
         .package(url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.0.0"),
-        .package(url: "https://github.com/macintosh-HD/payload-validation.git", from: "0.0.2")
+        .package(url: "https://github.com/macintosh-HD/payload-validation.git", from: "0.0.2"),
+        .package(url: "https://github.com/macintosh-HD/fluent-utils.git", from: "0.0.1")
     ],
     targets: [
         .target(
             name: "TypeformModel",
             dependencies: [
                 .product(name: "Fluent", package: "fluent"),
-                .product(name: "Vapor", package: "vapor")
+                .product(name: "Vapor", package: "vapor"),
+                .product(name: "FluentUtils", package: "fluent-utils")
             ]
         ),
         .target(
@@ -27,9 +29,7 @@ let package = Package(
             dependencies: [
                 .target(name: "TypeformModel"),
                 .product(name: "PayloadValidation", package: "payload-validation"),
-                .product(name: "FluentPostgresDriver", package: "fluent-postgres-driver"),
-                .product(name: "Fluent", package: "fluent"),
-                .product(name: "Vapor", package: "vapor")
+                .product(name: "FluentPostgresDriver", package: "fluent-postgres-driver")
             ],
             swiftSettings: [
                 // Enable better optimizations when building in Release configuration. Despite the use of

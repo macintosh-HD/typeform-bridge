@@ -5,6 +5,7 @@
 //  Created by Julian Gentges on 19.08.21.
 //
 
+import FluentUtils
 import Fluent
 import Vapor
 

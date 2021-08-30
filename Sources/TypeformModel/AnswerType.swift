@@ -5,6 +5,7 @@
 //  Created by Julian Gentges on 18.08.21.
 //
 
+import FluentUtils
 import Vapor
 
 public enum AnswerType: String, CaseIterable, FluentEnum, Content {

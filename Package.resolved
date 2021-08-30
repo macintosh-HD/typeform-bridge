@@ -56,6 +56,15 @@
         }
       },
       {
+        "package": "fluent-utils",
+        "repositoryURL": "https://github.com/macintosh-HD/fluent-utils.git",
+        "state": {
+          "branch": null,
+          "revision": "1f16498e1eb0052157c03e7bc4021cffa1111a95",
+          "version": "0.0.1"
+        }
+      },
+      {
         "package": "multipart-kit",
         "repositoryURL": "https://github.com/vapor/multipart-kit.git",
         "state": {
