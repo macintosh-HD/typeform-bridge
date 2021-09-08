@@ -10,9 +10,11 @@ import PayloadValidation
 import Vapor
 
 struct WebhookController: RouteCollection {
+    let app: Application
+    
     func boot(routes: RoutesBuilder) throws {
         var routes = routes
-        if let secretToken = Environment.get("TYPEFORM_SECRET") {
+        if let secretToken = try Environment.secret(key: "TYPEFORM_SECRET_FILE", fileIO: app.fileio, on: app.eventLoopGroup.next()).wait() {
             let validation = PayloadValidationMiddleware(secretToken: secretToken, signatureHeaderName: "HTTP_TYPEFORM_SIGNATURE")
             routes = routes.grouped(validation)
         }
