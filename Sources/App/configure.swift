@@ -27,6 +27,7 @@ public func configure(_ app: Application) throws {
     app.migrations.add(FormField.Migration(), to: .psql)
     app.migrations.add(PaymentAnswer.Migration(), to: .psql)
     app.migrations.add(ChoiceAnswer.Migration(), to: .psql)
+    try app.autoMigrate().wait()
     
     let encoder = JSONEncoder()
     encoder.keyEncodingStrategy = .convertToSnakeCase
