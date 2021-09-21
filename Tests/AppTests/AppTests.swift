@@ -18,7 +18,7 @@ final class AppTests: XCTestCase {
         let key = PayloadValidation.generateKey(secretToken: token, body: data)
         
         var headers = HTTPHeaders()
-        headers.add(name: "HTTP_TYPEFORM_SIGNATURE", value: key)
+        headers.add(name: "Typeform-Signature", value: key)
         headers.add(name: .contentType, value: HTTPMediaType.json.description)
 
         try app.test(.POST, "webhook", headers: headers) { req in
