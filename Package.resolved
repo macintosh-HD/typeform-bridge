@@ -78,8 +78,8 @@
         "repositoryURL": "https://github.com/macintosh-HD/payload-validation.git",
         "state": {
           "branch": null,
-          "revision": "a31a81205b156510b918be190ff50701acbbb513",
-          "version": "0.0.2"
+          "revision": "aba133b0507a46be003f78178f3bef35fb94547a",
+          "version": "0.0.3"
         }
       },
       {
