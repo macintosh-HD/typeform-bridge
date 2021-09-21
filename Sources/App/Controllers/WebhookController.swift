@@ -11,11 +11,12 @@ import Vapor
 
 struct WebhookController: RouteCollection {
     let app: Application
+    let signatureHeaderName: String
     
     func boot(routes: RoutesBuilder) throws {
         var routes = routes
         if let secretToken = try Environment.secret(key: "TYPEFORM_SECRET_FILE", fileIO: app.fileio, on: app.eventLoopGroup.next()).wait() {
-            let validation = PayloadValidationMiddleware(secretToken: secretToken, signatureHeaderName: "HTTP_TYPEFORM_SIGNATURE")
+            let validation = PayloadValidationMiddleware(secretToken: secretToken, signatureHeaderName: signatureHeaderName)
             routes = routes.grouped(validation)
         }
         
