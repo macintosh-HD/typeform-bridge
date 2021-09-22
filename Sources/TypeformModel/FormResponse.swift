@@ -67,9 +67,9 @@ extension FormResponse {
         public var token: String
         public var submittedAt: Date
         public var landedAt: Date
-        public var calculated: FormScore.Public
+        public var calculated: FormScore.Public?
         public var variables: [FormVariable.Public]
-        public var definition: FormDefinition.Public
+        public var definition: FormDefinition.Public?
         public var answers: [FormAnswer.Public]
     }
     
