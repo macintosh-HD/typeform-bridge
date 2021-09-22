@@ -47,9 +47,13 @@ struct WebhookController: RouteCollection {
                             return database.eventLoop.future(response)
                         }
                     }.flatMap { response -> EventLoopFuture<FormResponse> in
-                        let formVariables = payload.formResponse.variables.map(FormVariable.init(_:))
-                        
-                        return response.$variables.create(formVariables, on: database).map { response }
+                        if let variables = payload.formResponse.variables {
+                            let formVariables = variables.map(FormVariable.init(_:))
+                            
+                            return response.$variables.create(formVariables, on: database).map { response }
+                        } else {
+                            return database.eventLoop.future(response)
+                        }
                     }.flatMap { response -> EventLoopFuture<FormResponse> in
                         if let definition = payload.formResponse.definition {
                             let formDefinition = FormDefinition(definition)
@@ -65,31 +69,35 @@ struct WebhookController: RouteCollection {
                             return database.eventLoop.future(response)
                         }
                     }.flatMap { response in
-                        payload.formResponse.answers.map { answer in
-                            let formAnswer = FormAnswer(answer)
-                            
-                            return response.$answers.create(formAnswer, on: database)
-                                .flatMap { _ -> EventLoopFuture<Void> in
-                                    if let choice = answer.choice {
-                                        let choiceAnswers = choice.convert()
+                        if let answers = payload.formResponse.answers {
+                            return answers.map { answer in
+                                let formAnswer = FormAnswer(answer)
+                                
+                                return response.$answers.create(formAnswer, on: database)
+                                    .flatMap { _ -> EventLoopFuture<Void> in
+                                        if let choice = answer.choice {
+                                            let choiceAnswers = choice.convert()
+                                            
+                                            return formAnswer.$choices.create(choiceAnswers, on: database)
+                                        }
                                         
-                                        return formAnswer.$choices.create(choiceAnswers, on: database)
-                                    }
-                                    
-                                    if let payment = answer.payment {
-                                        let paymentAnswer = PaymentAnswer(payment)
+                                        if let payment = answer.payment {
+                                            let paymentAnswer = PaymentAnswer(payment)
+                                            
+                                            return formAnswer.$payment.create(paymentAnswer, on: database)
+                                        }
                                         
-                                        return formAnswer.$payment.create(paymentAnswer, on: database)
+                                        return database.eventLoop.future()
                                     }
-                                    
-                                    return database.eventLoop.future()
-                                }
-                                .flatMap {
-                                    let formField = FormField(answer.field)
-                                    
-                                    return formAnswer.$field.create(formField, on: database)
-                                }
-                        }.flatten(on: database.eventLoop)
+                                    .flatMap {
+                                        let formField = FormField(answer.field)
+                                        
+                                        return formAnswer.$field.create(formField, on: database)
+                                    }
+                            }.flatten(on: database.eventLoop)
+                        } else {
+                            return database.eventLoop.future()
+                        }
                     }
             }
         }.transform(to: .ok)

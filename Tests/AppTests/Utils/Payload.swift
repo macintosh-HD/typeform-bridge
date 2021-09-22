@@ -8,7 +8,7 @@
 import Foundation
 
 enum Payload {
-    static var typeform: String = """
+    static let typeform: String = """
         {
           "event_id": "LtWXD3crgy",
           "event_type": "form_response",
@@ -242,4 +242,5 @@ enum Payload {
           }
         }
     """
+
 }

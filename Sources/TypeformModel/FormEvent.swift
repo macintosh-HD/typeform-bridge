@@ -40,6 +40,7 @@ extension FormEvent {
     }
     
     public struct Public: Content {
+        public var id: UUID?
         public var eventId: String
         public var eventType: String
         public var formResponse: FormResponse.Public

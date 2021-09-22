@@ -68,9 +68,9 @@ extension FormResponse {
         public var submittedAt: Date
         public var landedAt: Date
         public var calculated: FormScore.Public?
-        public var variables: [FormVariable.Public]
+        public var variables: [FormVariable.Public]?
         public var definition: FormDefinition.Public?
-        public var answers: [FormAnswer.Public]
+        public var answers: [FormAnswer.Public]?
     }
     
     public convenience init(_ object: Public) {
