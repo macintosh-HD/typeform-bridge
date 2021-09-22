@@ -40,23 +40,30 @@ struct WebhookController: RouteCollection {
                 
                 return event.$response.create(formResponse, on: database).map { formResponse }
                     .flatMap { response -> EventLoopFuture<FormResponse> in
-                        let formScore = FormScore(payload.formResponse.calculated)
-                        
-                        return response.$calculated.create(formScore, on: database).map { response }
+                        if let score = payload.formResponse.calculated {
+                            let formScore = FormScore(score)
+                            return response.$calculated.create(formScore, on: database).map { response }
+                        } else {
+                            return database.eventLoop.future(response)
+                        }
                     }.flatMap { response -> EventLoopFuture<FormResponse> in
                         let formVariables = payload.formResponse.variables.map(FormVariable.init(_:))
                         
                         return response.$variables.create(formVariables, on: database).map { response }
                     }.flatMap { response -> EventLoopFuture<FormResponse> in
-                        let formDefinition = FormDefinition(payload.formResponse.definition)
-                        
-                        return response.$definition.create(formDefinition, on: database).map { formDefinition }
+                        if let definition = payload.formResponse.definition {
+                            let formDefinition = FormDefinition(definition)
+                            
+                            return response.$definition.create(formDefinition, on: database).map { definition }
                             .flatMap { definition in
-                                let fields = payload.formResponse.definition.fields.map(FormField.init(_:))
+                                let fields = definition.fields.map(FormField.init(_:))
                                 
-                                return definition.$fields.create(fields, on: database)
+                                return formDefinition.$fields.create(fields, on: database)
                             }
                             .map { response }
+                        } else {
+                            return database.eventLoop.future(response)
+                        }
                     }.flatMap { response in
                         payload.formResponse.answers.map { answer in
                             let formAnswer = FormAnswer(answer)
